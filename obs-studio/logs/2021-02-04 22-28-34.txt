@@ -1,0 +1,124 @@
+22:28:34.999: CPU Name: Intel(R) Core(TM) i5-6500T CPU @ 2.50GHz
+22:28:34.999: CPU Speed: 2074.018MHz
+22:28:34.999: Physical Cores: 4, Logical Cores: 4
+22:28:34.999: Physical Memory: 7867MB Total, 5405MB Free
+22:28:34.999: Kernel Version: Linux 4.19.0-12-amd64
+22:28:34.999: Distribution: "Debian GNU/Linux" "10"
+22:28:35.000: Window System: X11.0, Vendor: The X.Org Foundation, Version: 1.20.4
+22:28:35.001: Portable mode: false
+22:28:35.037: OBS 0.0.1 (linux)
+22:28:35.037: ---------------------------------
+22:28:35.037: ---------------------------------
+22:28:35.037: audio settings reset:
+22:28:35.037: 	samples per sec: 44100
+22:28:35.037: 	speakers:        2
+22:28:35.046: ---------------------------------
+22:28:35.046: Initializing OpenGL...
+22:28:35.074: Loading up OpenGL on adapter Intel Open Source Technology Center Mesa DRI Intel(R) HD Graphics 530 (Skylake GT2) 
+22:28:35.074: OpenGL loaded successfully, version 4.5 (Core Profile) Mesa 18.3.6, shading language 4.50
+22:28:35.097: ---------------------------------
+22:28:35.097: video settings reset:
+22:28:35.097: 	base resolution:   1280x720
+22:28:35.097: 	output resolution: 1280x720
+22:28:35.097: 	downscale filter:  Lanczos
+22:28:35.097: 	fps:               30/1
+22:28:35.097: 	format:            NV12
+22:28:35.097: 	YUV mode:          601/Partial
+22:28:35.103: Audio monitoring device:
+22:28:35.103: 	name: Por defecto
+22:28:35.103: 	id: default
+22:28:35.103: ---------------------------------
+22:28:35.150: No blackmagic support
+22:28:35.189: [obs-websocket] you can haz websockets (version 4.5.1)
+22:28:35.189: [obs-websocket] qt version (compile-time): 5.5.1 ; qt version (run-time): 5.11.3
+22:28:35.190: [obs-websocket] server started successfully on TCP port 4444
+22:28:35.192: [obs-websocket] module loaded!
+22:28:35.200: VLC found, VLC video source enabled
+22:28:35.200: ---------------------------------
+22:28:35.200:   Loaded Modules:
+22:28:35.200:     vlc-video.so
+22:28:35.200:     text-freetype2.so
+22:28:35.200:     rtmp-services.so
+22:28:35.200:     obs-x264.so
+22:28:35.200:     obs-websocket.so
+22:28:35.200:     obs-transitions.so
+22:28:35.200:     obs-outputs.so
+22:28:35.200:     obs-filters.so
+22:28:35.200:     obs-ffmpeg.so
+22:28:35.200:     linux-v4l2.so
+22:28:35.200:     linux-pulseaudio.so
+22:28:35.200:     linux-jack.so
+22:28:35.200:     linux-decklink.so
+22:28:35.200:     linux-capture.so
+22:28:35.200:     linux-alsa.so
+22:28:35.200:     image-source.so
+22:28:35.200:     frontend-tools.so
+22:28:35.200: ---------------------------------
+22:28:35.200: ==== Startup complete ===============================================
+22:28:35.202: All scene data cleared
+22:28:35.202: ------------------------------------------------
+22:28:35.204: pulse-input: Server name: 'pulseaudio 12.2'
+22:28:35.205: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+22:28:35.205: pulse-input: Started recording from 'alsa_output.pci-0000_00_1f.3.analog-stereo.monitor'
+22:28:35.272: pulse-input: Server name: 'pulseaudio 12.2'
+22:28:35.273: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+22:28:35.274: pulse-input: Started recording from 'alsa_input.pci-0000_00_1f.3.analog-stereo'
+22:28:35.361: Switched to scene 'Escena'
+22:28:35.361: ------------------------------------------------
+22:28:35.361: Loaded scenes:
+22:28:35.361: - scene 'Escena':
+22:28:35.361:     - source: 'Fuente de vídeo VLC' (vlc_source)
+22:28:35.361: - scene 'Inicio':
+22:28:35.361:     - source: 'Imagen 1' (slideshow)
+22:28:35.361: - scene 'Comunion':
+22:28:35.361:     - source: 'Ninio' (image_source)
+22:28:35.361: ------------------------------------------------
+22:28:35.778: adding 23 milliseconds of audio buffering, total audio buffering is now 23 milliseconds
+22:28:36.456: [obs-websocket] new client connection from 127.0.0.1:58714
+22:28:36.460: ---------------------------------
+22:28:36.460: [x264 encoder: 'simple_h264_stream'] preset: slower
+22:28:36.460: [x264 encoder: 'simple_h264_stream'] settings:
+22:28:36.460: 	rate_control: CBR
+22:28:36.460: 	bitrate:      2500
+22:28:36.460: 	buffer size:  2500
+22:28:36.460: 	crf:          0
+22:28:36.460: 	fps_num:      30
+22:28:36.460: 	fps_den:      1
+22:28:36.460: 	width:        1280
+22:28:36.460: 	height:       720
+22:28:36.460: 	keyint:       250
+22:28:36.460: 
+22:28:36.466: ---------------------------------
+22:28:36.466: [FFmpeg aac encoder: 'simple_aac'] bitrate: 160, channels: 2, channel_layout: 3
+22:28:36.466: 
+22:28:36.467: [rtmp stream: 'simple_stream'] Connecting to RTMP URL rtmp://a.rtmp.youtube.com/live2...
+22:28:36.547: adding 23 milliseconds of audio buffering, total audio buffering is now 46 milliseconds
+22:28:36.562: [obs-websocket] client 127.0.0.1:58714 disconnected
+22:28:36.719: [rtmp stream: 'simple_stream'] Connection to rtmp://a.rtmp.youtube.com/live2 successful
+22:28:36.720: ==== Streaming Start ===============================================
+22:28:43.171: [obs-websocket] new client connection from 127.0.0.1:58732
+22:28:43.173: User switched to scene 'Escena'
+22:28:43.274: [obs-websocket] client 127.0.0.1:58732 disconnected
+22:29:12.573: [obs-websocket] new client connection from 127.0.0.1:58762
+22:29:12.575: User switched to scene 'Escena'
+22:29:12.676: [obs-websocket] client 127.0.0.1:58762 disconnected
+22:31:26.332: [obs-websocket] new client connection from 127.0.0.1:58828
+22:31:26.363: User switched to scene 'Escena'
+22:31:26.464: [obs-websocket] client 127.0.0.1:58828 disconnected
+22:33:58.079: [obs-websocket] new client connection from 127.0.0.1:58900
+22:33:58.083: User switched to scene 'Escena'
+22:33:58.183: [obs-websocket] client 127.0.0.1:58900 disconnected
+22:34:08.021: [obs-websocket] new client connection from 127.0.0.1:58920
+22:34:08.023: User switched to scene 'Escena'
+22:34:08.123: [obs-websocket] client 127.0.0.1:58920 disconnected
+22:34:22.060: [obs-websocket] new client connection from 127.0.0.1:58952
+22:34:22.061: User switched to scene 'Escena'
+22:34:22.162: [obs-websocket] client 127.0.0.1:58952 disconnected
+22:39:51.040: [obs-websocket] new client connection from 127.0.0.1:59028
+22:39:51.056: User switched to scene 'Escena'
+22:39:51.156: [obs-websocket] client 127.0.0.1:59028 disconnected
+22:40:52.640: [obs-websocket] new client connection from 127.0.0.1:59056
+22:40:52.642: User switched to scene 'Escena'
+22:40:52.743: [obs-websocket] client 127.0.0.1:59056 disconnected
+22:42:21.649: [obs-websocket] new client connection from 127.0.0.1:59074
+22:42:21.753: [obs-websocket] client 127.0.0.1:59074 disconnected

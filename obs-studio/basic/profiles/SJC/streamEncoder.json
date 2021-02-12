@@ -1,0 +1,8 @@
+{
+    "bitrate": 2500,
+    "buffer_size": 5000,
+    "keyint_sec": 0,
+    "preset": "veryslow",
+    "rate_control": "VBR",
+    "use_bufsize": false
+}

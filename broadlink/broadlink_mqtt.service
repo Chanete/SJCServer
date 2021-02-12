@@ -1,0 +1,15 @@
+[Unit]
+Description=Broadlink MQTT Service
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/sjc/Broadlink_Mqtt/broadlink-mqtt/mqtt.py
+StandardInput=tty-force
+StandardOutput=/var/log/broadlink/mqtt.log
+StandardError=/var/log/broadlink/mqtt.log  
+
+
+[Install]
+WantedBy=multi-user.target 

@@ -1,0 +1,103 @@
+21:38:07.747: CPU Name: Intel(R) Core(TM) i5-6500T CPU @ 2.50GHz
+21:38:07.747: CPU Speed: 2700.608MHz
+21:38:07.747: Physical Cores: 4, Logical Cores: 4
+21:38:07.747: Physical Memory: 7867MB Total, 5453MB Free
+21:38:07.747: Kernel Version: Linux 4.19.0-12-amd64
+21:38:07.747: Distribution: "Debian GNU/Linux" "10"
+21:38:07.748: Window System: X11.0, Vendor: The X.Org Foundation, Version: 1.20.4
+21:38:07.748: Portable mode: false
+21:38:07.770: OBS 0.0.1 (linux)
+21:38:07.770: ---------------------------------
+21:38:07.771: ---------------------------------
+21:38:07.771: audio settings reset:
+21:38:07.771: 	samples per sec: 44100
+21:38:07.771: 	speakers:        2
+21:38:07.780: ---------------------------------
+21:38:07.780: Initializing OpenGL...
+21:38:07.807: Loading up OpenGL on adapter Intel Open Source Technology Center Mesa DRI Intel(R) HD Graphics 530 (Skylake GT2) 
+21:38:07.807: OpenGL loaded successfully, version 4.5 (Core Profile) Mesa 18.3.6, shading language 4.50
+21:38:07.830: ---------------------------------
+21:38:07.830: video settings reset:
+21:38:07.830: 	base resolution:   1280x720
+21:38:07.830: 	output resolution: 1280x720
+21:38:07.830: 	downscale filter:  Lanczos
+21:38:07.830: 	fps:               30/1
+21:38:07.830: 	format:            NV12
+21:38:07.830: 	YUV mode:          601/Partial
+21:38:07.836: Audio monitoring device:
+21:38:07.836: 	name: Por defecto
+21:38:07.836: 	id: default
+21:38:07.836: ---------------------------------
+21:38:07.883: No blackmagic support
+21:38:07.923: [obs-websocket] you can haz websockets (version 4.5.1)
+21:38:07.923: [obs-websocket] qt version (compile-time): 5.5.1 ; qt version (run-time): 5.11.3
+21:38:07.923: [obs-websocket] server started successfully on TCP port 4444
+21:38:07.926: [obs-websocket] module loaded!
+21:38:07.934: VLC found, VLC video source enabled
+21:38:07.934: ---------------------------------
+21:38:07.934:   Loaded Modules:
+21:38:07.934:     vlc-video.so
+21:38:07.934:     text-freetype2.so
+21:38:07.934:     rtmp-services.so
+21:38:07.934:     obs-x264.so
+21:38:07.934:     obs-websocket.so
+21:38:07.934:     obs-transitions.so
+21:38:07.934:     obs-outputs.so
+21:38:07.934:     obs-filters.so
+21:38:07.934:     obs-ffmpeg.so
+21:38:07.934:     linux-v4l2.so
+21:38:07.934:     linux-pulseaudio.so
+21:38:07.934:     linux-jack.so
+21:38:07.934:     linux-decklink.so
+21:38:07.934:     linux-capture.so
+21:38:07.934:     linux-alsa.so
+21:38:07.934:     image-source.so
+21:38:07.934:     frontend-tools.so
+21:38:07.934: ---------------------------------
+21:38:07.934: ==== Startup complete ===============================================
+21:38:07.936: All scene data cleared
+21:38:07.936: ------------------------------------------------
+21:38:07.938: pulse-input: Server name: 'pulseaudio 12.2'
+21:38:07.938: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+21:38:07.938: pulse-input: Started recording from 'alsa_output.pci-0000_00_1f.3.analog-stereo.monitor'
+21:38:08.004: pulse-input: Server name: 'pulseaudio 12.2'
+21:38:08.005: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+21:38:08.006: pulse-input: Started recording from 'alsa_input.pci-0000_00_1f.3.analog-stereo'
+21:38:08.006: Failed to open file '/home/sjc/html/tst/APP/sources/Comunion.jpeg': No existe el fichero o el directorio
+21:38:08.007: gs_image_file_init: Failed to load file '/home/sjc/html/tst/APP/sources/Comunion.jpeg'
+21:38:08.007: [image_source: 'Ninio'] failed to load texture '/home/sjc/html/tst/APP/sources/Comunion.jpeg'
+21:38:08.051: Switched to scene 'Escena'
+21:38:08.052: ------------------------------------------------
+21:38:08.052: Loaded scenes:
+21:38:08.052: - scene 'Escena':
+21:38:08.052:     - source: 'Fuente de vídeo VLC' (vlc_source)
+21:38:08.052: - scene 'Inicio':
+21:38:08.052:     - source: 'Imagen 1' (slideshow)
+21:38:08.052: - scene 'Comunion':
+21:38:08.052:     - source: 'Ninio' (image_source)
+21:38:08.052: ------------------------------------------------
+21:38:08.512: adding 23 milliseconds of audio buffering, total audio buffering is now 23 milliseconds
+21:38:09.151: [obs-websocket] new client connection from 127.0.0.1:57400
+21:38:09.155: ---------------------------------
+21:38:09.155: [x264 encoder: 'simple_h264_stream'] preset: slower
+21:38:09.155: [x264 encoder: 'simple_h264_stream'] settings:
+21:38:09.155: 	rate_control: CBR
+21:38:09.155: 	bitrate:      2500
+21:38:09.155: 	buffer size:  2500
+21:38:09.155: 	crf:          0
+21:38:09.155: 	fps_num:      30
+21:38:09.155: 	fps_den:      1
+21:38:09.155: 	width:        1280
+21:38:09.155: 	height:       720
+21:38:09.155: 	keyint:       250
+21:38:09.155: 
+21:38:09.160: ---------------------------------
+21:38:09.160: [FFmpeg aac encoder: 'simple_aac'] bitrate: 160, channels: 2, channel_layout: 3
+21:38:09.160: 
+21:38:09.162: [rtmp stream: 'simple_stream'] Connecting to RTMP URL rtmp://a.rtmp.youtube.com/live2...
+21:38:09.256: [obs-websocket] client 127.0.0.1:57400 disconnected
+21:38:09.420: adding 23 milliseconds of audio buffering, total audio buffering is now 46 milliseconds
+21:38:09.433: [rtmp stream: 'simple_stream'] Connection to rtmp://a.rtmp.youtube.com/live2 successful
+21:38:09.434: ==== Streaming Start ===============================================
+21:38:27.919: [obs-websocket] new client connection from 127.0.0.1:57426
+21:38:28.022: [obs-websocket] client 127.0.0.1:57426 disconnected
