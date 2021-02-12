@@ -1,0 +1,15 @@
+[Unit]
+Description=Servicio Rest para la aplicacion de SJC
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=sjc
+WorkingDirectory=/home/sjc/restapi
+ExecStart=/home/sjc/.local/bin/gunicorn SJC_Server:api -b 192.168.1.248 --access-logfile /var/log/SJC_Server/SJC_Server.log
+
+[Install]
+WantedBy=multi-user.target

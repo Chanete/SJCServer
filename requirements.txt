@@ -1,0 +1,13 @@
+requests
+falcon
+zulu
+google-api-python-client
+oauth2client
+paho-mqtt
+gunicorn
+broadlink
+bs4
+obs-websocket-py
+onvif-zeep
+wheel
+psutil
