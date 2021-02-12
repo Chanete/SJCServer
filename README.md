@@ -1,6 +1,6 @@
 # SJCServer Package
 Este paquete esta diseñado para realizar las transmisiones via YouTube de la parroquia San Juan Crisostomo de Madrid. 
-Se puede reutilizar para cualqueir otro tipo de retransmision ajustando los parametros en los ficheros de configuracion. Ver seccion *Parametros de Configuración*
+Se puede reutilizar para cualqueir otro tipo de retransmision ajustando los parametros en los ficheros de configuracion. Ver seccion **Parametros de Configuración**
 Crearemos un usuario sjc para no estar siempre tirando del usuario root que no es muy bueno...
 Es importante añadir este usuario a los que tienen autorizado el comando sudo para que esta guia funcione. 
 Esto se consigue asi
@@ -19,24 +19,24 @@ y, añadid detras
 pulsar Crtl-X , la tecla 'S' y Enter
 
 
-##INSTALACIÓN
+## INSTALACIÓN
 Partimos de un Debian (en este momento la 10.8). Durante la instalación hemos seleccionado que se instale el entorno gráfico LXDE. 
 
 Lo primero que tenemos que hacer es actualizar el sistema con las últimas versiones (profilaxis...)
 Esto lo hacemos con
     sudo apt update
-    sudo apt upgrade
+    sudo apt upgrade 
     sudo apt dist-upgrade
 
 y reiniciamos
     sudo reboot
 
-###Instalar paquetes necesario
+### Instalar paquetes necesario
 Cuando arranque, lo siguiente que vamos a hacer es instalar todos los paquetes que necesitamos para que esto funcione: 
   
-    sudo apt install nginx-full mosquitto mosquitto-clients obs-studio  vlc net-tools adb git -y 
+    sudo apt install nginx-full mosquitto mosquitto-clients obs-studio  vlc net-tools adb git python3-pip -y 
 
-###Instalar OBS-WebSockets
+### Instalar OBS-WebSockets
 
 Para instalar este componente necesitamos ejecutar estos comandos:
 
@@ -49,10 +49,13 @@ Para instalar este componente necesitamos ejecutar estos comandos:
     make -j4
     sudo make install
 
-###Instalar la aplicacion 
+### Instalar la aplicacion 
 
-    cd 
-    git clone
+    cd  
+    git clone https://github.com/Chanete/SJCServer.git
+    cd SJCServer
+    sudo pip3 install -r requirements.txt 
+
 
 [Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
 to write your content. 
