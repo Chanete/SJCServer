@@ -56,6 +56,3 @@ Para instalar este componente necesitamos ejecutar estos comandos:
     cd SJCServer
     sudo pip3 install -r requirements.txt 
 
-
-[Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
-to write your content. 
