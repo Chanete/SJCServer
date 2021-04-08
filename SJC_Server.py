@@ -17,16 +17,20 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+fh = logging.FileHandler('%s' % config.SERVER.LOGFILE)
+fh.setFormatter(formatter)
 falcon_logger = logging.getLogger('gunicorn.error')
 
-
+falcon_logger.addHandler(fh)
 from obswebsocket import obsws, requests  # noqa: E402
 from obsctl.obsctl import OBS_StopStreaming
 from obsctl.obsctl import OBS_Escena
 from obsctl.obsctl import OBS_Lista_Escenas
 from obsctl.obsctl import OBS_StartStreaming
-
-
+from obsctl.obsctl import OBS_SetCamUrl
+from obsctl.obsctl import OBS_SetSyncOffset
 
 
 from yt_functions.yt_functions import YT_Programa_Misa
@@ -36,9 +40,11 @@ from yt_functions.yt_functions import YT_StopBroadcasting
 from yt_functions.yt_functions import YT_Get_Stream_Data
 from yt_functions.yt_functions import YT_SetPublic
 from yt_functions.yt_functions import YT_DeleteBroadcast
+from yt_functions.yt_functions import YT_Code
 from mqtt.mqtt_ctl import MQTT_Proyector
 from mqtt.mqtt_ctl import MQTT_Audio
-from onvif import ONVIFCamera
+from OV_ctl.OV_ctl import OV_Move_to_preset
+from player.Raspi import Play
 
 
 
@@ -215,6 +221,7 @@ class StopBroadcast:
             'msg': msg
         }
         falcon_logger.info("RC: %s MSG: %s" %(rc,msg))
+        rc,msg=OV_Move_to_preset(0,"General")
         resp.media = datos
 
 class GetTransmissions:
@@ -296,19 +303,8 @@ class Sala:
 class StartFireTV:
     def on_get(self, req, resp):
         bid = req.get_param("bid", required=False)
-        falcon_logger.info("StartFireTv: BID %s" %(bid))
-        rc=os.system("%s connect %s:5555" % (config.FIRE_TV.ADB_COMMAND,config.FIRE_TV.HOST))
-        falcon_logger.info("FireTV CMD: Connect  RC: %s" % rc)
-    
-        rc=os.system("%s shell am force-stop org.videolan.vlc" % config.FIRE_TV.ADB_COMMAND)   
-        falcon_logger.info("FireTV CMD: Stop Videolan  RC: %s" % rc)
-        
-        rc=os.system("%s shell input keyevent 3" % config.FIRE_TV.ADB_COMMAND)
-        falcon_logger.info("FireTV CMD: Keyevent 3   RC: %s" % rc)
-        
-        cmd="%s shell am start -n org.videolan.vlc/org.videolan.vlc.gui.video.VideoPlayerActivity -e input-repeat 3 -a android.intent.action.VIEW -d  'https://youtu.be/%s'"  % (config.FIRE_TV.ADB_COMMAND, bid)
-        rc=os.system(cmd)
-        falcon_logger.info("FireTV CMD: %s  RC: %s" % (cmd,rc))
+        Play(bid)
+
 
 
 class Move_to_Preset:
@@ -319,23 +315,25 @@ class Move_to_Preset:
 
         if plano in config.CAMARA.PLANOS:
             planod=config.CAMARA.PLANOS[plano]
-            print(planod)
             v=config.CAMARA.PLANOS[plano][0]
             escena=config.CAMARA.PLANOS[plano][1]
-
+            rc,msg=OV_Move_to_preset(v,plano)
+            rc,msg=OBS_Escena(escena) 
+            """
             try:
                 mycam = ONVIFCamera(config.CAMARA.HOST,config.CAMARA.PORT, config.CAMARA.USER,config.CAMARA.PASSWORD) 
                 ptz = mycam.create_ptz_service()
-                ptz.GotoPreset({"ProfileToken": "MainStream", "PresetToken": v} )
+                xx=ptz.GotoPreset({"ProfileToken": "MainStream", "PresetToken": v} )
                 rc=0
                 msg="Ok - Movida camara a %s %s " % (plano,v)
             
-            except:
+            except  Exception as e:
+                falcon_logger.info("Error conexion a camara: %s" % str(e))
                 rc=9
-                msg="Error al conectar con camara"
+                msg="Error al conectar con camara %s " % str(e)
 
-            rc,msg=OBS_Escena(escena) 
-
+            
+            """
         else:
             rc=8
             msg="No existe el preset %s" % plano 
@@ -347,7 +345,16 @@ class Move_to_Preset:
         falcon_logger.info("RC: %s MSG: %s" %(rc,msg))
         resp.media = datos
 
-
+class OARedir:
+    def on_get(self, req, resp):
+        state = req.get_param("state", required=False)
+        code = req.get_param("code", required=False)
+        YT_Code(state,code)
+        datos = {
+            'rc': "Todo OK para canal %s" % state
+        }
+        falcon_logger.info("Code de canal %s terminado" % state)
+        resp.media = datos
 
 class Get_Liturgical_Date:
     def on_get(self, req, resp):
@@ -373,7 +380,10 @@ logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
 
 
-falcon_logger.info("Iniciando servicio")
+#OBS_SetCamUrl(config.OBS.CAM_URL)
+#OBS_SetSyncOffset()
+#YT_Init()
+falcon_logger.info("Iniciando servicio v2.00")
 
 api = falcon.API()
 api.req_options.auto_parse_form_urlencoded=True
@@ -393,3 +403,4 @@ api.add_route("%s/StartFireTV" % config.SERVER.ROOT_PATH, StartFireTV())
 api.add_route("%s/Sala" % config.SERVER.ROOT_PATH, Sala())
 api.add_route("%s/Proyector" % config.SERVER.ROOT_PATH, Proyector())
 api.add_route("%s/Audio" % config.SERVER.ROOT_PATH, Audio())
+api.add_route("%s/OARedir" % config.SERVER.ROOT_PATH, OARedir())

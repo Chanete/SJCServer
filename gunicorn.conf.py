@@ -1,4 +1,5 @@
+import config as cfg
 import multiprocessing
 
-bind = "192.168.1.246:8000"
+bind = "%s:%s" % (cfg.SERVER.IP,cfg.SERVER.PORT)
 workers = multiprocessing.cpu_count() * 2 + 1

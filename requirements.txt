@@ -11,3 +11,4 @@ obs-websocket-py
 onvif-zeep
 wheel
 psutil
+youtube-dl

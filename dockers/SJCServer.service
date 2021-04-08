@@ -1,0 +1,14 @@
+[Unit]
+Description=SJC Server
+After=network-online.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+User=sjc
+ExecStart=/home/sjc/SJCServer/start.sh
+
+
+[Install]
+WantedBy=network-online.target
+

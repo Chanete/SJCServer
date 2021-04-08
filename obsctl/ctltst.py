@@ -27,20 +27,40 @@ except:
     sys.exit(12)
 
 resp=ws.call(requests.GetSourcesList())
-print("\n\n***")
 
 for resource in resp.getSources():
     nombre=resource["name"]
-    print(nombre)
+    print("\n\n %s \n\n" % nombre)
+    sett = ws.call(requests.GetSyncOffset(nombre))
+    print(sett)
 
-    if (nombre=="Cam1"):
+    if (nombre=="Fuente de vídeo VLC"):
+        print("\n\n Resource")
+        print(resource)
         sett=ws.call(requests.GetSourceSettings(nombre))
+#        print("\n\n Settings \n",sett,"\n\n")
+
+
+        """
+        req= {'sourceName': nombre,
+              'sourceType': 'vlc_source', 
+              'sourceSettings':
+        """
+        settings= {'playlist': \
+                    [ 
+                        {'hidden': False, 
+                        'selected': False,
+                        'value': "rtsp://192.168.1.110:554/1/h264major"
+                        }
+                    ]
+                   }
+ 
+
+        print("\n\ Pido: \n")
         print(sett)
-        req= {'sourceName': 'Cam1', 'sourceSettings': {'input': 'rtsp://admin:@192.168.1.110/1/h264major', 'is_local_file': False}, 'sourceType': 'ffmpeg_source'}
-        print(req)
-        req["sourceSettings"]["input"]="rtsp://admin:@192.168.1.110/mpeg4main"
-        sett=ws.call(requests.SetSourceSettings(sourceSettings=req,sourceName='Cam1'))
-        print("Devuelve")
+        sett=ws.call(requests.SetSourceSettings(sourceSettings=settings,sourceName=nombre,sourceType='vlc_source'))
+        print("\n\nDevuelve\n")
         print(sett)
+       
 ws.disconnect()
     

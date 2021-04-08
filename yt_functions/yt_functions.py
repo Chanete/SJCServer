@@ -4,21 +4,34 @@ import httplib2
 import os
 import sys
 import time
+import arrow
 from datetime import datetime
 from datetime import timedelta
+from dateutil import tz
+
 import requests
 from bs4 import BeautifulSoup
 import json
 import zulu
 
+
+from chrome.Logon import auth
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import Credentials
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 from dateutil.parser import * 
 import logging
+from google_auth_oauthlib.flow import InstalledAppFlow
 #from dateutil import parser
+
+#Cargar datos de usuario
+with open(config.YT.SECRETS) as json_file:
+    oa_data = json.load(json_file)
+
 
 falcon_logger = logging.getLogger('gunicorn.error')
 
@@ -50,49 +63,71 @@ def normalize(s):
     return s
 
 
-
-# This variable defines a message to display if the CLIENT_SECRETS_FILE is
-# missing.
-MISSING_CLIENT_SECRETS_MESSAGE = """
-WARNING: Please configure OAuth 2.0
-To make this sample run you will need to populate the client_secrets.json file
-found at:
-   %s
-with information from the {{ Cloud Console }}
-{{ https://cloud.google.com/console }}
-For more information about the client_secrets.json file format, please visit:
-https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-""" % os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                   "."))
-
 class Namespace:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+    
+def YT_Code(canal,code):
+      falcon_logger.error("Recibido codigo %s del canal %s " % (code,canal))
+      rc=0
+      msg="OK"
+      falcon_logger.error("Creando flow")
+      flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
+              client_secret=oa_data["web"]["client_secret"],
+              scope =YOUTUBE_READ_WRITE_SCOPE,
+              redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+              state=canal,
+              login_hint="aruizori@itelsys.com")
+      falcon_logger.error("Flow: Step 2. Solicitud de token")    
+      credentials=flow.step2_exchange(code=code)
+      falcon_logger.error("Token OK, guardando fichero.")
+      storage = Storage(config.YT.STORAGE % canal)
+      credentials = storage.put(credentials) 
+      falcon_logger.error("Proceso terminado. Credenciales guardadas.")
+      return rc,msg
 
 def get_authenticated_service(canal,args):
-
-  global logging
-  
   logging.basicConfig(level=logging.INFO)
   logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
   logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
   
-  flow = flow_from_clientsecrets(config.YT.SECRETS,
-    scope=YOUTUBE_READ_WRITE_SCOPE,
-    message=MISSING_CLIENT_SECRETS_MESSAGE)
-
-
   falcon_logger.info("Abriendo canal %s" %canal)
   storage = Storage(config.YT.STORAGE % canal)
-  credentials = storage.get()
-
-  args = Namespace(logging_level="INFO",noauth_local_webserver="",auth_host_port="")
+  credentials = storage.get() 
+  
   if credentials is None or credentials.invalid:
-    falcon_logger.error("Credenciales de %s incorrectas. Ignoando canal." % canal)
-    credentials = run_flow(flow, storage, args)
+      falcon_logger.error("Credenciales de %s incorrectas. Gestionando renovación." % canal)
+      flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
+              client_secret=oa_data["web"]["client_secret"],
+              scope =YOUTUBE_READ_WRITE_SCOPE,
+              redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+              state=canal,
+              login_hint=config.YT.CANALES[canal][0],
+              prompt="consent ")
+      falcon_logger.info(flow.step1_get_authorize_url()) 
+      auth(flow.step1_get_authorize_url(),canal)
+      falcon_logger.info("Flow terminado. Espero 2s para recargar credenciales...")
+      time.sleep(2)
+      credentials = storage.get() 
+
+  http_check=credentials.authorize(httplib2.Http())
+  try:
+      chk=credentials.refresh(http_check)
+  except: 
+    falcon_logger.error("Error de credenciales. Inicio flujo Autj")
+    flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
+            client_secret=oa_data["web"]["client_secret"],
+            scope =YOUTUBE_READ_WRITE_SCOPE,
+            redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+            state=canal,
+            login_hint="aruizori@itelsys.com",
+            prompt="consent ")
+    falcon_logger.info(flow.step1_get_authorize_url()) 
+    auth(flow.step1_get_authorize_url(),canal)
+
 
   return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,cache_discovery=False,
-    http=credentials.authorize(httplib2.Http()))
+    http=http_check)
 
 
 def Conecta_Canal(canal,args):
@@ -104,7 +139,7 @@ def Conecta_Canal(canal,args):
 # scheduled end time, and privacy status.
 def insert_broadcast(youtube, titulo,inicio, fin,privacidad,auto=""):
 
-  falcon_logger.info("Inicio: %s Fin: %s" % (inicio,fin))
+  falcon_logger.info("Insert Broadcast: %s Fin: %s" % (inicio,fin))
   insert_broadcast_response = youtube.liveBroadcasts().insert(
     part="snippet,status,contentDetails",
     body=dict(
@@ -114,7 +149,7 @@ def insert_broadcast(youtube, titulo,inicio, fin,privacidad,auto=""):
         scheduledEndTime=fin,
         description=auto
       ),
-      status=dict(
+      status=dict(  
         privacyStatus=privacidad,
         selfDeclaredMadeForKids="no"
       ),
@@ -353,6 +388,7 @@ def Get_Transmisions(youtube,tipo="upcoming"):
   items= list()
   while(pageToken):
     if (pageToken==1):                          # Si es la primera página, no poner next-token
+      falcon_logger.info("Solicitando lista de transmisiones a YouTube")
       request = youtube.liveBroadcasts().list(
                 part="snippet,contentDetails,status",
                 broadcastStatus=tipo
@@ -492,7 +528,8 @@ def YT_Programa_Misa(titulo,privacidad,inicio,key,canal,args,auto=""):
     msg= "La fecha de inicio es incorrecta: (%s)\n" % inicio
     return 1,msg,"","","","","",""
 
-  inicio=f_inicio-timedelta(minutes=5)    # Inicio real de la grabacion 5 minutos antes.
+#  inicio=f_inicio-timedelta(minutes=5)    # Inicio real de la grabacion 5 minutos antes.
+  inicio=f_inicio                         # Inicio real de la grabacion sin adelantos. 
   fin=inicio+timedelta(minutes=60)        # Fin real de la grabacion un hora despues de inicio
 
   if (inicio < datetime.now()):           # Si el inicio es anterior a ahora, no continuar. 
@@ -507,7 +544,7 @@ def YT_Programa_Misa(titulo,privacidad,inicio,key,canal,args,auto=""):
         falcon_logger.info ("%s %s" %(rc,msg))
         return rc,msg,"","","","","",""
 
-  os.system("whoami")
+#  os.system("whoami")
   if (hay_conflicto(youtube,f_inicio)):       # Ver si hay algo mas programado a esa hora. 
       return 3,"Hay otra emision en conflicto","","","","","",""  
 
@@ -525,10 +562,19 @@ def YT_Programa_Misa(titulo,privacidad,inicio,key,canal,args,auto=""):
   # Generar Evento. 
   #
 
-  try:
-
+  try: 
+    displace=1+time.localtime().tm_isdst
+    displace=displace*-1
     falcon_logger.info("Creando Broadcast")
-    broadcast_id,published = insert_broadcast(youtube, titulo,inicio.strftime("%Y-%m-%d %H:%M:00"),fin.strftime("%Y-%m-%d %H:%M:00"),privacidad,auto=auto)
+    arr_inicio=arrow.get(inicio.strftime("%Y-%m-%dT%H:%M:00"))
+    arr_inicio.replace(tzinfo='GMT-1') 
+    arr_fin=arrow.get(fin.strftime("%Y-%m-%dT%H:%M:00"))
+    arr_fin.replace(tzinfo='GMT-1')
+    arr_inicio=arr_inicio.shift(hours=displace)
+    arr_fin=arr_fin.shift(hours=displace)
+    print(arr_inicio,arr_fin)
+#    broadcast_id,published = insert_broadcast(youtube, titulo,inicio.strftime("%Y-%m-%dT%H:%M:00 %Z"),fin.strftime("%Y-%m-%dT%H:%M:00 %Z"),privacidad,auto=auto)
+    broadcast_id,published = insert_broadcast(youtube, titulo,arr_inicio.isoformat(),arr_fin.isoformat(),privacidad,auto=auto)
     falcon_logger.info("Obteniendo Stream")
 #   rc,msg,streamId,nombre_stream,desc_stream=get_streamid(youtube,"(*AUTO*)")
     rc,msg,streamId,nombre_stream,desc_stream=insert_stream(youtube,"(S)%s" % broadcast_id) 

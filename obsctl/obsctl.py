@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import config
 import sys
 import time
 import os
@@ -25,6 +25,39 @@ def Mata_Proceso(proceso):
             p.wait()
     
 
+def OBS_SetCamUrl(url):
+    falcon_logger.info("Configurando camara OBS en %s" % url)
+    ws = obsws(host, port, password)
+    try:
+        ws.connect()
+    except:
+        return 1,"Error de Conexion - ¿OBS Parado?)"
+
+    settings= {'playlist': \
+                [ 
+                    {'hidden': False, 
+                    'selected': False,
+                    'value': url
+                    }
+                ]
+                }
+    ws.call(requests.SetSourceSettings(sourceSettings=settings,sourceName=config.OBS.SOURCE_NAME,sourceType=config.OBS.SOURCE_TYPE))
+    falcon_logger.info("Camara configurada.")
+    ws.disconnect()
+
+def OBS_SetSyncOffset():
+    falcon_logger.info("Configurando Sync Offset de %s en %s nanonesgundos" % (config.OBS.AUDIO_SOURCE,config.OBS.AUDIO_SYNC))
+    ws = obsws(host, port, password)
+    try:
+        ws.connect()
+    except:
+        return 1,"Error de Conexion - ¿OBS Parado?)"
+
+    ws.call(requests.SetSyncOffset(source=config.OBS.AUDIO_SOURCE,offset=config.OBS.AUDIO_SYNC))
+    falcon_logger.info("Sync Offset configurado..")
+    ws.disconnect()
+
+
 def OBS_StopStreaming():
     ws = obsws(host, port, password)
     try:
@@ -35,24 +68,26 @@ def OBS_StopStreaming():
     ws.call(requests.StopStreaming())
     ws.disconnect()
     falcon_logger.info("Streaming Parado")
-    Mata_Proceso("xinit")
-    falcon_logger.info("OBS Matado")
+#    Mata_Proceso("obs")
+#    falcon_logger.info("OBS Matado")
     return 0,"Ok"
 
 
 def OBS_Escena(Escena):
+    falcon_logger.info("Cambiando a escena: %s" % Escena)
     ws = obsws(host, port, password)
     try:
         ws.connect()
     except:
         return 1,"Error de Conexion - ¿OBS Parado?)"
-    falcon_logger.info("Cambiando a escena: %s" % Escena)
+
     ws.call(requests.SetCurrentScene(Escena))
     ws.disconnect()
     return 0,"Ok"
 
 
 def OBS_Lista_Escenas():
+    falcon_logger.info("Lista Escenas")
     ws = obsws(host, port, password)
     lista=[]
     try:
@@ -69,19 +104,16 @@ def OBS_Lista_Escenas():
 
 def OBS_StartStreaming(key,ingestion):
     """Handles GET requests"""
-
+    falcon_logger.info("OBS_StartStreaming")
     falcon_logger.info("Key: %s Ingestion: %s" % (key,ingestion))
-    Mata_Proceso("xinit")
-    falcon_logger.info("Arrancando X")
-    os.system("startx obs&")
-    time.sleep(2)
+    OBS_SetCamUrl(config.OBS.CAM_URL)
     ws = obsws(host, port, password)
     try:
         ws.connect()
     except:
-        return 1,"Error de Conexion - ¿OBS Parado)"
-    falcon_logger.info("Inicio Streaming")
+        return 1,"Error de Conexion - ¿OBS Parado? - StartStreaming)"
 
+    falcon_logger.info("Inicio Streaming")
 
     stream_settings = {
         "server":ingestion,
