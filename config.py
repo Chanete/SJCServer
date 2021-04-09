@@ -38,6 +38,8 @@ class RASPI:
     HOST = "192.168.1.109"
     USER = "pi"
 
+class CHROMECAST:
+    NAME="Salón grande"
 
 class CAMARA:
     HOST="192.168.1.110" 

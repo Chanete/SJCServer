@@ -15,30 +15,21 @@ VIDEO_ID = "dQw4w9WgXcQ"
 
 VIDEO_ID="8Zuav_UKCig"
 
-devices, browser = pychromecast.discovery.discover_chromecasts()
-# Shut down discovery
-browser.stop_discovery()
-
-print(f"Discovered {len(devices)} device(s):")
-
-for device in devices:
-    if device.friendly_name == CAST_NAME:
-        cast=device
-    print(f"  {device}")
-
-chromecasts, browser = pychromecast.get_listed_chromecasts(friendly_names=[args.cast])
+print("i")
+chromecasts, browser = pychromecast.get_listed_chromecasts(friendly_names=[CAST_NAME])
+print("o")
 if not chromecasts:
-    print('No chromecast with name "{}" discovered'.format(args.cast))
+    print('No chromecast with name %s iscovered' % CAST_NAME)
     sys.exit(1)
-
+browser.stop_discovery()
 cast = chromecasts[0]
 print(cast)
 # Start socket client's worker thread and wait for initial status update
 cast.wait()
-
+print("Creo")
 yt = YouTubeController()
+print("handler")
 cast.register_handler(yt)
+print("Play")
 yt.play_video(VIDEO_ID)
-
-# Shut down discovery
-browser.stop_discovery()
+print("fin")

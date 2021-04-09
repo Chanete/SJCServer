@@ -44,8 +44,8 @@ from yt_functions.yt_functions import YT_Code
 from mqtt.mqtt_ctl import MQTT_Proyector
 from mqtt.mqtt_ctl import MQTT_Audio
 from OV_ctl.OV_ctl import OV_Move_to_preset
-from player.Raspi import Play
-
+from player.Chrome import Play
+from player.Chrome import Media_Stop
 
 
 #
@@ -91,8 +91,11 @@ class StopStreaming:
         bid = req.get_param("bid", required=True)
         canal = req.get_param("canal", required=True)
         YT_SetPublic(bid,canal,"Private")
+        Media_Stop()
+        time.sleep(3)
         rc,msg=OBS_StopStreaming()
         rc,msg=YT_StopBroadcasting(bid,canal,"")
+        OV_Move_to_preset(0,"General")
         datos = {
             'rc': rc,
             'msg': msg
