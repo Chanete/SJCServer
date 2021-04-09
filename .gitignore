@@ -1,2 +1,8 @@
-/creds
+/creds/*
 *.json
+screenshot*
+kk
+*.log
+test.py
+config.py
+geckodriver

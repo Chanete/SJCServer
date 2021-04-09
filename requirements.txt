@@ -12,3 +12,6 @@ onvif-zeep
 wheel
 psutil
 youtube-dl
+selenium
+arrow
+zulu
