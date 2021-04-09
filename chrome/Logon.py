@@ -78,6 +78,6 @@ def auth(url,canal):
             e=driver.find_element_by_id("submit_approve_access")
             e.click()
             time.sleep(2)
-            driver.save_screenshot('screenshot5 .png') 
+            driver.save_screenshot('screenshot5.png') 
     falcon_logger.info("Logon Terminado")
 
