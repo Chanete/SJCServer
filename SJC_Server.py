@@ -93,7 +93,7 @@ class StopStreaming:
         YT_SetPublic(bid,canal,"Private")
         Media_Stop()
         time.sleep(3)
-        OV_Move_to_preset(0,"General")
+        OV_Move_to_preset(1,"General")
         rc,msg=OBS_StopStreaming()
         rc,msg=YT_StopBroadcasting(bid,canal,"")
 
@@ -225,7 +225,7 @@ class StopBroadcast:
             'msg': msg
         }
         falcon_logger.info("RC: %s MSG: %s" %(rc,msg))
-        rc,msg=OV_Move_to_preset(0,"General")
+        rc,msg=OV_Move_to_preset(1,"General")
         resp.media = datos
 
 class GetTransmissions:
