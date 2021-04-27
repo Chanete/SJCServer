@@ -87,7 +87,7 @@ def get_title(fecha):
 
 class StopStreaming:
     def on_get(self, req, resp):
-        falcon_logger.info("StopStreaming")
+        falcon_logger.info("StopStreaming 2.0")
         bid = req.get_param("bid", required=True)
         canal = req.get_param("canal", required=True)
         YT_SetPublic(bid,canal,"Private")
@@ -392,7 +392,7 @@ logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
 #OBS_SetCamUrl(config.OBS.CAM_URL)
 #OBS_SetSyncOffset()
 #YT_Init()
-falcon_logger.info("Iniciando servicio v2.00")
+falcon_logger.info("Iniciando servicio v2.01")
 
 api = falcon.API()
 api.req_options.auto_parse_form_urlencoded=True

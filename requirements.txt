@@ -15,5 +15,3 @@ youtube-dl
 selenium
 arrow
 zulu
-zeroconf
-pychromecast
