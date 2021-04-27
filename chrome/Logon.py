@@ -31,15 +31,32 @@ def check_id(driver,id):
 def auth(url,canal):
     falcon_logger.info("Matando instancias del navegador abiertas...")
     os.system("pkill firefox")
+    """
     options = Options()
     options.headless = True
     driver = webdriver.Firefox(options=options,executable_path="/home/sjc/SJCServer/chrome/geckodriver")
     action = ActionChains(driver)
     wait = WebDriverWait(driver, 10) # Timeout maximo de pagina
+    """
     clave=config.YT.CANALES[canal][1]
 
 
     falcon_logger.info("Solicitando URL %s " %url)
+
+    driver_path = "/home/sjc/SJCServer/chrome/chromedriver"
+    brave_path = "/usr/bin/brave-browser"
+
+    option = webdriver.ChromeOptions()
+    option.binary_location = brave_path
+# option.add_argument("--incognito") OPTIONAL
+    option.add_argument("--headless") 
+
+# Create new Instance of Chrome
+    print("voy")
+    driver = webdriver.Chrome(executable_path=driver_path, chrome_options=option)
+    print("vengo")
+
+
 #    driver.get("https://accounts.google.com/o/oauth2/v2/auth?client_id=901857448933-immj7hkvc618r2hnm7130e3lanc535l5.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Fbueso.itelsys.com%3A1313%2FSJC%2FOARedir&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube&login_hint=internoSjc%40gmail.com&access_type=offline&response_type=code&state=Interno&prompt=consent")
     driver.get(url)
     driver.save_screenshot('screenshot1.png') 

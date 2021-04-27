@@ -93,9 +93,10 @@ class StopStreaming:
         YT_SetPublic(bid,canal,"Private")
         Media_Stop()
         time.sleep(3)
+        OV_Move_to_preset(0,"General")
         rc,msg=OBS_StopStreaming()
         rc,msg=YT_StopBroadcasting(bid,canal,"")
-        OV_Move_to_preset(0,"General")
+
         datos = {
             'rc': rc,
             'msg': msg
@@ -232,7 +233,6 @@ class GetTransmissions:
     def on_get(self, req, resp):
         falcon_logger.info("GetTransmissions")
         rc,msg,items=YT_Get_Transmisions()
-        print(items)
         datos = {
             'rc': rc,
             'msg': msg,
@@ -352,12 +352,18 @@ class OARedir:
     def on_get(self, req, resp):
         state = req.get_param("state", required=False)
         code = req.get_param("code", required=False)
-        YT_Code(state,code)
+        rc,msg=YT_Code(state,code)
         datos = {
-            'rc': "Todo OK para canal %s" % state
+             'rc': rc,
+             'msg': msg
         }
         falcon_logger.info("Code de canal %s terminado" % state)
-        resp.media = datos
+        if (rc==0):
+            resp.content_type="text/html"
+            resp.body="<html><script> window.close()</script>Todo OK</html>"
+            resp.status = falcon.HTTP_200
+        else:
+            resp.media = datos
 
 class Get_Liturgical_Date:
     def on_get(self, req, resp):

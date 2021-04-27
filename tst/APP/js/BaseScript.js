@@ -1,7 +1,7 @@
 screen_2
-var VERSION = "1.1.4";
+var VERSION = "1.1.5.3b";
 
-
+ 
 var EMITIR;
 var BAS_URL = "/SJC/";
 var titulo;
@@ -219,9 +219,13 @@ function Emitir_Directo(){
   document.getElementById('Status_Display').innerHTML = "Porfavor espere.<br>Cargando...";
   fetch('/SJC/GetTransmissions?')
   .then((respuesta)=>{
+
     return respuesta.json();
   }).then((respuesta) => {
-
+    if (respuesta.rc==99) {
+      alert("Credenciales caducadas. Por favor, valide de nuevo en la siguiente pantalla.");
+      window.open(respuesta.msg,"Validar credenciales");
+  }  
     document.getElementById('Status_Display').innerHTML = "";
     document.getElementById('CABECERA1').style = "display:true; background-color: #A6A6A6";
     document.getElementById('CABECERA2').style = "display:true; background-color: #A6A6A6";

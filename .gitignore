@@ -1,4 +1,3 @@
-/creds/*
 *.json
 screenshot*
 kk
@@ -6,3 +5,4 @@ kk
 test.py
 config.py
 geckodriver
+t.py

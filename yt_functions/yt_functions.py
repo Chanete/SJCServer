@@ -27,11 +27,12 @@ from dateutil.parser import *
 #from google_auth_oauthlib.flow import InstalledAppFlow
 
 import logging
-#from dateutil import parser
+#from dateutil import parser  
 
 #Cargar datos de usuario
 with open(config.YT.SECRETS) as json_file:
     oa_data = json.load(json_file)
+redirect_uri=oa_data["web"]["redirect_uris"][0]
 
 
 falcon_logger = logging.getLogger('gunicorn.error')
@@ -76,9 +77,9 @@ def YT_Code(canal,code):
       flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
               client_secret=oa_data["web"]["client_secret"],
               scope =YOUTUBE_READ_WRITE_SCOPE,
-              redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+              redirect_uri=redirect_uri,
               state=canal,
-              login_hint="aruizori@itelsys.com")
+              login_hint=config.YT.CANALES[canal][0])
       falcon_logger.error("Flow: Step 2. Solicitud de token")    
       credentials=flow.step2_exchange(code=code)
       falcon_logger.error("Token OK, guardando fichero.")
@@ -92,49 +93,58 @@ def get_authenticated_service(canal,args):
   logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
   logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
   
-  falcon_logger.info("Abriendo canal %s" %canal)
+  falcon_logger.info("Abriendo canal %s" %canal) 
   storage = Storage(config.YT.STORAGE % canal)
   credentials = storage.get() 
   
   if credentials is None or credentials.invalid:
-      falcon_logger.error("Credenciales de %s incorrectas. Gestionando renovación." % canal)
+      falcon_logger.error("Credenciales de %s incorrectas. Gestionando renovación. V2" % canal)
       flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
               client_secret=oa_data["web"]["client_secret"],
               scope =YOUTUBE_READ_WRITE_SCOPE,
-              redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+              redirect_uri=redirect_uri,
               state=canal,
               login_hint=config.YT.CANALES[canal][0],
               prompt="consent ")
       falcon_logger.info(flow.step1_get_authorize_url()) 
-      auth(flow.step1_get_authorize_url(),canal)
+#      auth(flow.step1_get_authorize_url(),canal)
+      return 99,flow.step1_get_authorize_url()
       falcon_logger.info("Flow terminado. Espero 2s para recargar credenciales...")
       time.sleep(2)
       credentials = storage.get() 
 
-  http_check=credentials.authorize(httplib2.Http())
+
   try:
+      http_check=credentials.authorize(httplib2.Http())
       chk=credentials.refresh(http_check)
   except: 
     falcon_logger.error("Error de credenciales. Inicio flujo Autj")
     flow= OAuth2WebServerFlow(client_id=oa_data["web"]["client_id"],
             client_secret=oa_data["web"]["client_secret"],
             scope =YOUTUBE_READ_WRITE_SCOPE,
-            redirect_uri="http://bueso.itelsys.com:1313/SJC/OARedir",
+            redirect_uri=redirect_uri,
             state=canal,
-            login_hint="aruizori@itelsys.com",
+            login_hint=config.YT.CANALES[canal][0],
             prompt="consent ")
     falcon_logger.info(flow.step1_get_authorize_url()) 
-    auth(flow.step1_get_authorize_url(),canal)
+#    auth(flow.step1_get_authorize_url(),canal)
 
 
-  return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,cache_discovery=False,
+
+  return 0,build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,cache_discovery=False,
     http=http_check)
 
 
 def Conecta_Canal(canal,args):
-      yt=get_authenticated_service(canal,args) 
-      falcon_logger.info("Canal %s conectado." % canal )
-      return 0,"OK",yt
+      rc,yt=get_authenticated_service(canal,args) 
+      if (rc==99):
+            msg=yt
+            yt=None
+            falcon_logger.info("Error en conexion  al canal %s. URL: %s" % (canal,msg) )
+      else:
+        falcon_logger.info("Canal %s conectado." % canal )
+        msg="OK"
+      return rc,msg,yt
 
 # Create a liveBroadcast resource and set its title, scheduled start time,
 # scheduled end time, and privacy status.
@@ -207,6 +217,7 @@ def YT_SetPublic( bid,canal,privacy="Public"):
       falcon_logger.info(bdy)
       request = youtube.liveBroadcasts().update(part="status",body=bdy)
       response = request.execute()
+      falcon_logger.info("Canal  %s puesto en %s " % (canal,privacy) )
     except HttpError as e:
       err_data=json.loads(e.content)
       msg=err_data["error"]["message"]
@@ -341,6 +352,11 @@ def YT_Get_Stream_Data(sid,canal):
     falcon_logger.info("Returninf from YT_Get_Stream_Data")
     return key,addr,stat
 
+def utc2local(utc):
+    epoch = time.mktime(utc.timetuple())
+    offset = datetime.fromtimestamp(epoch) - datetime.utcfromtimestamp(epoch)
+    return utc + offset
+
 def load_list(items,resp,youtube,canal):
   for k in items:
     bid=k["id"]
@@ -353,32 +369,40 @@ def load_list(items,resp,youtube,canal):
     pub=k["snippet"]["publishedAt"]
     try:
       sched=k["snippet"]["scheduledStartTime"]
-      print(sched)
-      
-      sdate=zulu.parse(sched,default_tz ='Europe/Madrid') 
+      sdate=zulu.parse(sched,default_tz ='UTC') 
+      sched=utc2local(sdate.naive)
 #    sdate= parser.parse(sched)
-      sched=sdate.strftime("%-d %b %H:%M")
+      schedt=sched.strftime("%-d %b %H:%M")
     except: 
-      sched="Error fecha"  
+      schedt="Error fecha"  
     stat=(k["status"]["lifeCycleStatus"])
-    resp.append({"broadcast_id":bid,"titulo":title,"desc":desc,"Fecha_pub":pub,"Fecha_Sched":sched,"Canal":canal,"streamId":sid,"key":key,"ingestionAddr":addr,"status":stat})
+    print()
+    resp.append({"broadcast_id":bid,"titulo":title,"desc":desc,"Fecha_pub":pub,"Fecha_Sched":schedt,"Canal":canal,"streamId":sid,"key":key,"ingestionAddr":addr,"status":stat})
 
 
 def YT_Get_Transmisions():
   falcon_logger.info("Get Transmisions")
   resp=list()
   rc,msg,youtube = Conecta_Canal("Interno","")   # Conecta y autentica el API de Google
+  if (rc==99):
+        falcon_logger.info("Peticion de transmisiones cancelada")
+        return rc,msg,[]
   rc,msg,items = Get_Transmisions(youtube)
   load_list(items,resp,youtube,"Interno")
   rc,msg,items = Get_Transmisions(youtube,tipo="active")
   load_list(items,resp,youtube,"Interno")
 
   rc,msg,youtube = Conecta_Canal("SJC","")   # Conecta y autentica el API de Google
+  if (rc==99):
+        falcon_logger.info("Peticion de transmisiones cancelada")
+        return rc,msg,[]
+
   rc,msg,items = Get_Transmisions(youtube)
   load_list(items,resp,youtube,"SJC")
+
   rc,msg,items = Get_Transmisions(youtube,tipo="active")
   load_list(items,resp,youtube,"SJC")
-
+  falcon_logger.info("Peticion de transmisiones completada")
   return rc,msg,resp
         
 
