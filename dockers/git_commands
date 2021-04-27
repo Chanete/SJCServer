@@ -1,0 +1,10 @@
+git add .
+git commit -m "Version"
+git push origin master
+la clave es Lehman
+
+En destino
+git pull 
+
+si falla por duplicados 
+git reset --hard
