@@ -22,5 +22,6 @@ if __name__ == "__main__":
 #  argparser.add_argument("--noauth_local_webserver", help="Authtype",    default=True)
   args = argparser.parse_args()
   canal=args.canal
-  youtube = get_authenticated_service(canal,args)   # Conecta y autentica el API de Google
+  rc,youtube = get_authenticated_service(canal,args)   # Conecta y autentica el API de Google
+  
  

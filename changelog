@@ -1,2 +1,7 @@
 #Inicio relacion de cambios
 
+30/4/2021
+  * Inlcuida herramienta checker V0 para verificar que las claves de YouTube son validas. Hay que meter un cron para ejecutarla periodicamente
+  * Incluida herramienta Arranca_Sala. Mira si hay una emision programada en los proximos 15 min. Si es así, arranca la sala de abajo. Meter en cron a las horas que se quiera automatizar un arranque de sala
+  * Correccion del formato de fecha que se devuelve el listado. Ahora es AAAA-MM-DD HH:HH
+  

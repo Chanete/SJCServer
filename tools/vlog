@@ -1,0 +1,2 @@
+#/bin/sh
+tail /var/log/SJCServer/SJCServer.log -f 

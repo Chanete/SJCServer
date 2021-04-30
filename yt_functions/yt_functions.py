@@ -372,7 +372,8 @@ def load_list(items,resp,youtube,canal):
       sdate=zulu.parse(sched,default_tz ='UTC') 
       sched=utc2local(sdate.naive)
 #    sdate= parser.parse(sched)
-      schedt=sched.strftime("%-d %b %H:%M")
+      schedt=sched.strftime("%Y-%m-%d %H:%M")
+      print(schedt)
     except: 
       schedt="Error fecha"  
     stat=(k["status"]["lifeCycleStatus"])
