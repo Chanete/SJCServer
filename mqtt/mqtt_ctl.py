@@ -78,8 +78,8 @@ def MQTT_Proyector(estado):
             client.publish("%sbroadlink/record" % test,"proyectoron" )
             falcon_logger.error("Enviando mensaje MQTT %sbroadlink/replay proyectoron" % test )
         client.disconnect()
-    except:
-        falcon_logger.error("Error al conectar a MQTT. Mensaje no enviado")
+    except Exception as e:
+        falcon_logger.error("Error al conectar a MQTT. Mensaje no enviado %s" % str(e))
         return 9,"Error de conexion"
     return 0,"ok"
 
@@ -100,7 +100,8 @@ def MQTT_Audio(estado):
         client.connect(host=config.MQTT.HOST, port=config.PORT)
         client.publish("%scmnd/audio/POWER" % test, estado)
         client.disconnect()
-    except: 
+    except Exception as e:
+        falcon_logger.error("Error al conectar a MQTT. Mensaje no enviado %s" % str(e)) 
         return 9,"Error de conexion"
     return 0,"ok"
 
