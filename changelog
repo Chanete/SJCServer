@@ -2,6 +2,19 @@
 
 30/4/2021
   * Inlcuida herramienta checker V0 para verificar que las claves de YouTube son validas. Hay que meter un cron para ejecutarla periodicamente
+    Esta herramienta incorpora la variable CHECKER_LOG= '/var/log/SJCServer/Checker.log' a config 
   * Incluida herramienta Arranca_Sala. Mira si hay una emision programada en los proximos 15 min. Si es así, arranca la sala de abajo. Meter en cron a las horas que se quiera automatizar un arranque de sala
   * Correccion del formato de fecha que se devuelve el listado. Ahora es AAAA-MM-DD HH:HH
-  
+  * Se incorpora la posibilidad de enviar Telegrams con Telegram-send. Es necesario hacer telegram-send --configure en la maquina destino con el usuario sjc
+24/05/2021
+  * Se incorpora el control de consumo del proyector para decidir si esta encendido o no.
+     aparencen en config.py  en la sección MQTT 4 parametros nuevos: 
+    AUDIO_STAT_HOST = "192.168.1.152"   IP del controlador de Audio
+    VIDEO_STAT_HOST = "192.168.1.152"   IP del controlador de potencia del proyector
+    UMBRAL_ON = "100"                   Umbral de consideración equipo encendido
+    POWER_CHECK = False                 Activar/Desactivar el control de alimentación
+
+  * Corregidos fallos en checker y su script de llamada.
+
+
+           

@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 # Version V0
 import sys
-sys.path.append('../')
+sys.path.append('/home/sjc/SJCServer/')
 import config
 from yt_functions.yt_functions import get_authenticated_service
 from oauth2client.tools import argparser
 import logging 
 from  telegram_send import send as TG_Send
+import time
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
@@ -31,3 +32,4 @@ for canal in config.YT.CANALES.keys():
     else: 
         falcon_logger.info("Error en canal Youtube %s (%s) url: %s" % (canal,rc,youtube) )
         TG_Send(messages=["Error %s al verificar canal %s" % (rc,canal),youtube])
+        time.sleep(10)

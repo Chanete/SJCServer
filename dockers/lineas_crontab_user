@@ -1,0 +1,1 @@
+0 9-21 * * * /home/sjc/SJCServer/tools/chk.sh  >/tmp/Checker.out 2>/tmp/Checker.err
