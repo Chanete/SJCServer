@@ -71,6 +71,7 @@ def MQTT_Proyector(estado):
 
     falcon_logger.info("Enviando mensaje MQTT %sbroadlink/replay proyectoron" % test )
     try:
+        falcon_logger.info("Estableciendo conexion con %s:%s" % (config.MQTT.HOST,config.MQTT.PORT))
         client.connect(host=config.MQTT.HOST, port=config.MQTT.PORT)
         client.publish("%sbroadlink/record" % test,"proyectoron" )
         if (estado=="OFF"):
@@ -97,7 +98,8 @@ def MQTT_Audio(estado):
          
     falcon_logger.info("Enviando mensaje MQTT %scmnd/audio/power %s" % (test,estado ))
     try:
-        client.connect(host=config.MQTT.HOST, port=config.PORT)
+        falcon_logger.info("Estableciendo conexion con %s:%s" % (config.MQTT.HOST,config.MQTT.PORT))
+        client.connect(host=config.MQTT.HOST, port=config.MQTT.PORT)
         client.publish("%scmnd/audio/POWER" % test, estado)
         client.disconnect()
     except Exception as e:
