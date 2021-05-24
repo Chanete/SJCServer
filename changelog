@@ -15,6 +15,6 @@
     POWER_CHECK = False                 Activar/Desactivar el control de alimentación
 
   * Corregidos fallos en checker y su script de llamada.
-
+  * Eliminado uso de libreria paho porque no conecta al mosquitto . se usa mosquitto_pub con os.system
 
            

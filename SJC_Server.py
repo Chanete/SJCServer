@@ -41,8 +41,8 @@ from yt_functions.yt_functions import YT_Get_Stream_Data
 from yt_functions.yt_functions import YT_SetPublic
 from yt_functions.yt_functions import YT_DeleteBroadcast
 from yt_functions.yt_functions import YT_Code
-from mqtt.mqtt_ctl import MQTT_Proyector
-from mqtt.mqtt_ctl import MQTT_Audio
+from mqtt.mqtt_ctl_cmd import MQTT_Proyector
+from mqtt.mqtt_ctl_cmd import MQTT_Audio
 
 
 from OV_ctl.OV_ctl import OV_Move_to_preset
