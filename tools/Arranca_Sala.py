@@ -30,7 +30,6 @@ falcon_logger = logging.getLogger('gunicorn.error')
 falcon_logger.addHandler(fh)
 
 
-
 # obtener lista de transmisiones
 rc,msg,items=YT_Get_Transmisions()
 if (rc != 0):
@@ -51,9 +50,20 @@ for t in items:
     if (r < 20) and (r > 0):
         flag=False
         break
+
 if (flag):
     falcon_logger.info("No hay transmisiones en los proximos 20 min")
+    TG_Send(messages=["No hay transmisiones en los proximos 20 min"])
     sys.exit(12)
+
+
+sala=True; 
+if (len(sys.argv)>1):
+    parm=sys.argv[1]
+    if (parm=="NOSALA"):
+        falcon_logger.info("No se activará la sala de abajo")
+        TG_Send(messages=["No se activará la sala de abajo"])
+        sala=False
 
 falcon_logger.info("Vamos a emitir %s a las %s en el canal %s" % (titulo,fecha,canal))
 TG_Send(messages=["Vamos a emitir %s a las %s en el canal %s" % (titulo,fecha,canal)])
@@ -74,20 +84,22 @@ time.sleep(2)
 falcon_logger.info("Escena espera")
 OBS_Escena("Waiting")
 time.sleep(15)
-falcon_logger.info("Encendiendo sala")
-MQTT_Audio("ON")            
-MQTT_Proyector("ON")
-Play(bid)
-TG_Send(messages=["Sala encendida"])
+if (sala):
+    falcon_logger.info("Encendiendo sala")
+    MQTT_Audio("ON")            
+    MQTT_Proyector("ON")
+    Play(bid)
+    TG_Send(messages=["Sala encendida"])
 b=datetime.now().timestamp()
 dt=dt-(60*5)
 r=(dt-b)/60
 while (r > 0):
+    time.sleep(30)
     b=datetime.now().timestamp()
     r=(dt-b)/60
     falcon_logger.info("Quedan %0.2f para poner plano general" % r)
     TG_Send(messages=["Quedan %0.2f para poner plano general" % r])
-    time.sleep(30)
+
 OBS_Escena("Escena")
 falcon_logger.info("Todo terminado")
 TG_Send(messages=["Escena general activada. Emision en curso"])

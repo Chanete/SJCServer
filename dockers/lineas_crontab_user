@@ -1,1 +1,2 @@
 0 9-21 * * * /home/sjc/SJCServer/tools/chk.sh  >/tmp/Checker.out 2>/tmp/Checker.err
+6 11 * * * /home/sjc/SJCServer/tools/sala.sh >/tmp/sala.out 2>/tmp/sala.err
