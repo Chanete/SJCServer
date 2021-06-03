@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # Versio V0
 import sys
-sys.path.append('../')
+sys.path.append('/home/sjc/SJCServer')
 import config
 from yt_functions.yt_functions import YT_Get_Transmisions
 from yt_functions.yt_functions import YT_SetPublic
