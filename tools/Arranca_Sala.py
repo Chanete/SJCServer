@@ -20,7 +20,7 @@ from datetime import datetime
 import sys
 import time
 import logging
-from  telegram_send import send as TG_Send
+from  Telegram.Telegram_funcs import TG_Send
 
 logging.basicConfig(level=logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')

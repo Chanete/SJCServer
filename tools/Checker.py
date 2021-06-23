@@ -6,7 +6,7 @@ import config
 from yt_functions.yt_functions import get_authenticated_service
 from oauth2client.tools import argparser
 import logging 
-from  telegram_send import send as TG_Send
+from  Telegram.Telegram_funcs import TG_Send
 import time
 
 logging.basicConfig(level=logging.INFO)
